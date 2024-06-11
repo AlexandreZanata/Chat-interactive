@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Secret: {{ room }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adicionando a meta tag viewport -->
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket;
+        $(document).ready(function(){
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            socket.on('connect', function() {
+                socket.emit('joined', {});
+            });
+            socket.on('status', function(data) {
+                $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+            socket.on('message', function(data) {
+                $('#chat').val($('#chat').val() + data.msg + '\n');
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+            $('#text').keypress(function(e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    text = $('#text').val();
+                    $('#text').val('');
+                    socket.emit('text', {msg: text});
+                }
+            });
+        });
+        function leave_room() {
+            socket.emit('left', {}, function() {
+                socket.disconnect();
+
+                // go back to the login page
+                window.location.href = "{{ url_for('main.index') }}";
+            });
+        }
+
+        function sendMessage() {
+            var text = $('#text').val();
+            $('#text').val('');
+            socket.emit('text', {msg: text});
+        }
+    </script>
+    <style>
+        body {
+            background-color: #340064;
+            color: white;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: rgb(255, 255, 255);
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: -18px;
+            font-weight: bold;
+        }
+        #chat {
+            width: 100%;
+            height: calc(100vh - 110px);
+            background-color: #000;
+            color: white;
+            border: none;
+            resize: none;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            width: calc(83% - 20px);
+            margin: 10px;
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .button {
+            color: rgb(255, 255, 255); /* Texto preto */
+            text-decoration: none;
+            display: inline-block;
+            width: 80px;
+            margin: 3px 3px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 0px;
+        }
+        .leave-room {
+            background-color: #000000; /* Amarelo vivo */
+            font-weight: bold; /* Texto em negrito */
+        }
+        .send-message {
+            background-color: #6105b8; /* Azul escuro */
+            font-weight: bold; /* Texto em negrito */
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media only screen and (max-width: 767px) {
+            body {
+                font-size: 20px; /* Aumentando o tamanho da fonte para dispositivos móveis */
+            }
+            #chat {
+                height: calc(89vh - 200px); /* Redimensionando a área de chat para dispositivos móveis */
+            }
+            input[type="text"] {
+                width: calc(100% - 20px); /* Ajustando a largura do campo de texto para dispositivos móveis */
+                font-size: 20px; /* Aumentando o tamanho da fonte para dispositivos móveis */
+            }
+            .button {
+                width: 100px; /* Ajustando a largura dos botões para dispositivos móveis */
+                font-size: 20px; /* Aumentando o tamanho da fonte dos botões para dispositivos móveis */
+                display: block;
+                margin: 4px auto; /* Centralizando os botões */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>CHAT SECRET: {{ room }}</h1>
+    <textarea id="chat" rows="20" readonly></textarea>
+    <input id="text" type="text" placeholder="Enter your message here">
+    <a href="#" onclick="sendMessage();" class="button send-message"><b>Enviar</b></a>
+    <a href="#" onclick="leave_room();" class="button leave-room"><b>Sair</b></a>
+</body>
+</html>

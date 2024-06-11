@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SECRET CHAT</title>
+    <style>
+        body {
+            background-color: #340064;
+            color: white;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: rgb(255, 255, 255);
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: -45px;
+            font-weight: bold;
+        }
+        form {
+            text-align: center;
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            width: calc(50% - 20px);
+            margin: 10px;
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 20px; /* Aumentando o tamanho do padding */
+            box-sizing: border-box;
+            font-size: 32px; /* Aumentando o tamanho da fonte */
+        }
+        input[type="submit"] {
+            background-color: #6105b8; /* Azul escuro */
+            color: rgb(255, 255, 255); /* Texto preto */
+            border: none;
+            padding: 20px 40px; /* Aumentando o tamanho do padding */
+            text-align: center;
+            border-radius: 0px;
+            font-weight: bold; /* Texto em negrito */
+            cursor: pointer;
+            font-size: 32px; /* Aumentando o tamanho da fonte */
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media only screen and (max-width: 767px) {
+            body {
+                font-size: 50px; /* Aumentando o tamanho da fonte para dispositivos móveis */
+            }
+            input[type="text"] {
+                width: calc(100% - 20px); /* Ajustando a largura do campo de texto para dispositivos móveis */
+                font-size: 40px; /* Aumentando o tamanho da fonte para dispositivos móveis */
+            }
+            input[type="submit"] {
+                width: calc(100% - 20px); /* Ajustando a largura do botão para dispositivos móveis */
+                font-size: 40px; /* Aumentando o tamanho da fonte para dispositivos móveis */
+                display: block;
+                margin: 20px auto; /* Centralizando o botão e aumentando a margem */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>SECRET CHAT ROOM</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }}: {{ form.name() }} {% for error in form.name.errors %}{{ error }}{% endfor %}<br>
+        {{ form.room.label }}: {{ form.room() }} {% for error in form.room.errors %}{{ error }}{% endfor %}<br>
+        {{ form.submit() }}
+    </form>
+</body>
+</html>
+
+
